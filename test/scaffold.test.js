@@ -52,6 +52,21 @@ test('no sobrescribe un archivo existente salvo force', async () => {
   assert.notEqual(await readFile(path.join(dir, '.claude', 'CLAUDE.md'), 'utf8'), 'MIO');
 });
 
+test('gitignore de la plantilla se copia como .gitignore', async () => {
+  // npm no publica archivos llamados `.gitignore`: si la plantilla lo
+  // guardara con punto, el proyecto generado desde npm se quedaría sin él
+  // y .claude/state/ terminaría versionado.
+  assert.ok(!existsSync(path.join(ROOT, 'template', 'base', '.claude', '.gitignore')));
+
+  const dir = await tempDir();
+  await copyTree(path.join(ROOT, 'template', 'base'), dir, { vars: { PROJECT_NAME: 'x' } });
+
+  const written = path.join(dir, '.claude', '.gitignore');
+  assert.ok(existsSync(written));
+  assert.match(await readFile(written, 'utf8'), /^state\/$/m);
+  assert.ok(!existsSync(path.join(dir, '.claude', 'gitignore')));
+});
+
 test('los hooks se copian con shebang y sin CRLF', async () => {
   const dir = await tempDir();
   await copyTree(path.join(ROOT, 'template', 'base'), dir, { vars: { PROJECT_NAME: 'x' } });

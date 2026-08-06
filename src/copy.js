@@ -6,6 +6,14 @@ import path from 'node:path';
 const TEMPLATED = new Set(['.md', '.json', '.sh', '.txt', '.yml', '.yaml']);
 
 /**
+ * npm excluye del tarball cualquier archivo llamado `.gitignore`, sin forma
+ * de evitarlo: instalado desde npm el archivo simplemente no llega. Se
+ * guarda sin punto en la plantilla y se renombra al copiar — el mismo
+ * rodeo que usan create-next-app y create-vite.
+ */
+const RENAME_ON_COPY = new Map([['gitignore', '.gitignore']]);
+
+/**
  * Copia recursiva de `from` a `to`.
  *
  * Nunca sobrescribe un archivo existente salvo `force`. Es deliberado: el
@@ -29,7 +37,7 @@ export async function copyTree(from, to, { vars = {}, force = false, exclude = [
     for (const entry of entries) {
       const src = path.join(srcDir, entry.name);
       if (excluded.has(path.normalize(path.relative(from, src)))) continue;
-      const dest = path.join(destDir, entry.name);
+      const dest = path.join(destDir, RENAME_ON_COPY.get(entry.name) ?? entry.name);
 
       if (entry.isDirectory()) {
         await mkdir(dest, { recursive: true });
