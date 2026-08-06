@@ -1,0 +1,8 @@
+# LF en todo, también en checkout sobre Windows. Los hooks de template/ se
+# ejecutan con bash: un CRLF los rompe con "bad interpreter: /usr/bin/env
+# bash^M" en cuanto alguien genera un proyecto en Linux o macOS desde un
+# clon hecho en Windows.
+* text=auto eol=lf
+*.sh text eol=lf
+*.png binary
+*.jpg binary

@@ -1,0 +1,4 @@
+# Estado efímero de sesión: marcadores de checkpoint y status.json.
+# No es evidencia ni decisión, no se versiona.
+state/
+settings.local.json

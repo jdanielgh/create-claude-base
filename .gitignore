@@ -1,0 +1,7 @@
+node_modules/
+*.log
+.DS_Store
+npm-debug.log*
+# Anclado a la raíz: sin la barra inicial también ignoraría
+# template/base/.claude/state/, que sí tiene que versionarse.
+/.claude/state/

@@ -1,0 +1,45 @@
+{
+  "name": "create-claude-base",
+  "version": "0.1.0",
+  "description": "Scaffolder de una base de Claude Code para proyectos nuevos: CLAUDE.md, rules, agents, commands, hooks y MCP, con presets para mobile, web, backend y RAG.",
+  "type": "module",
+  "bin": {
+    "create-claude-base": "bin/cli.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "template",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18.17"
+  },
+  "scripts": {
+    "test": "node --test",
+    "try": "node bin/cli.js /tmp/cbb-demo --preset=mobile --yes --no-skills"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "scaffold",
+    "template",
+    "agents",
+    "skills",
+    "mcp",
+    "ui",
+    "ux",
+    "mobile"
+  ],
+  "author": "jdanielgh",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jdanielgh/create-claude-base.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jdanielgh/create-claude-base/issues"
+  },
+  "homepage": "https://github.com/jdanielgh/create-claude-base#readme"
+}
