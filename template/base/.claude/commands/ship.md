@@ -1,20 +1,31 @@
 ---
-description: Preparar el cambio actual para revisión: verificación en verde, rama, commit y PR — deteniéndose antes de mergear.
+description: Entrega el desarrollo terminado para revisión funcional: delega en el agente pre-merge, que revisa, verifica, audita, abre el PR e informa qué queda por probar a mano.
 ---
 
-Lleva el trabajo actual hasta un PR listo para revisar, siguiendo
-`rules/git-workflow.md`. Nunca mergeas: eso lo decide el usuario.
+Invocá al subagente **`pre-merge`** con el Agent tool.
 
-Pasos, en orden, deteniéndote si alguno falla:
+Todo el flujo de entrega vive ahí: revisión del diff, arreglo de los
+hallazgos medium+, la verificación completa, el audit de dependencias, el
+PR y el informe final. Este comando no repite ninguno de esos pasos — si
+estuvieran también acá, las dos copias divergirían en el tercer cambio.
 
-1. Revisa qué cambió realmente (`git status` y el diff). Si hay cambios que
-   no pertenecen a este trabajo, dilo antes de commitearlos.
-2. Corre la verificación completa. Si está en rojo, párate acá y reporta.
-3. Si estás sobre la rama principal, crea una rama con nombre descriptivo.
-4. Commit con un mensaje en imperativo que describa el efecto del cambio.
-5. Abre el PR con un cuerpo que diga qué cambia, por qué, y cómo se
-   verificó.
-6. Devuelve la URL del PR y **detente**. No mergeas ni aunque la
-   verificación esté verde.
+Lo que tenés que pasarle en el prompt, porque el agente arranca en frío:
+
+1. **Qué se implementó y por qué.** La intención del cambio, no la lista de
+   archivos: eso lo lee del diff.
+2. **Contra qué rama se compara**, si el proyecto tiene más de una rama de
+   larga vida.
+3. **Qué ya se probó a mano**, si probaste algo. Le evita pedirte de nuevo
+   una comprobación que ya hiciste.
+4. **Decisiones que se tomaron durante el desarrollo** y que no se leen del
+   código — sobre todo si se descartó una alternativa.
+
+Cuando termine, relevá al usuario el informe completo: veredicto, hallazgos
+y cómo se resolvieron, resultado de la verificación, la URL del PR, y
+—especialmente— **lo que el agente no pudo verificar**, que es el guion de
+la revisión funcional.
+
+El agente nunca mergea. Esa decisión sigue siendo del usuario, y el verde
+no es autorización (`rules/git-workflow.md`).
 
 $ARGUMENTS

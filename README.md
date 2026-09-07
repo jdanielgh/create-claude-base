@@ -45,18 +45,26 @@ npx create-claude-base mi-app --preset=mobile
 ### Base (todos los presets)
 
 **Reglas** — `dev-style`, `git-workflow`, `security-privacy`,
-`agents-and-context`, `ai-cost`.
+`dependency-audit`, `agents-and-context`, `ai-cost`, `task-report`.
 
 La de `ai-cost` es la menos obvia y la que más ahorra: prohíbe llamadas
 reales a la API en tests y CI, exige estimación de costo antes de una
 corrida, y exige verificar idempotencia antes de gastar — para que una
-corrida interrumpida no se pague dos veces.
+corrida interrumpida no se pague dos veces. La de `dependency-audit` separa
+la política de vulnerabilidades (qué bloquea, qué peso tiene cada
+dependencia, la escalera de arreglo) de `security-privacy`, para que cada
+archivo se pueda leer sin la otra. La de `task-report` fija qué se le
+responde al usuario cuando una tarea termina: solo lo que necesita para
+probar y decidir, nunca lo que ya está en el diff.
 
 **Subagentes** — `planner` (diseño de cambios que tocan varios módulos),
-`code-reviewer` (revisión antes del PR), `ops-runner` (Haiku, para
-corridas mecánicas cuya salida no vale el contexto que ocupa).
+`code-reviewer` (revisión puntual a mitad de camino), `pre-merge` (Opus, la
+puerta final: revisa, arregla los hallazgos medium+, corre la verificación
+completa y el audit de dependencias, abre el PR y entrega el guion de qué
+probar a mano), `ops-runner` (Haiku, para corridas mecánicas cuya salida no
+vale el contexto que ocupa).
 
-**Comandos** — `/checkpoint`, `/verify`, `/ship`.
+**Comandos** — `/checkpoint`, `/verify`, `/ship` (delega en `pre-merge`).
 
 **Hooks** — deterministas, nunca llaman al modelo:
 
@@ -74,7 +82,7 @@ corridas mecánicas cuya salida no vale el contexto que ocupa).
 | --- | --- |
 | `mobile` | `design-ui`, `mobile-platform`, comando `/screen`, Figma MCP, 3 skills de diseño |
 | `web` | `design-ui` (web), Figma MCP, 3 skills de diseño |
-| `backend` | `api-design` (contratos, errores, idempotencia, migraciones) |
+| `backend` | `api-design` (contratos, errores, idempotencia, migraciones), `vendor-cost` (guardrail de tier gratuito para servicios externos, a duplicar por proveedor) |
 | `data-rag` | `rag`, subagente `rag-engineer` |
 | `minimal` | nada extra |
 

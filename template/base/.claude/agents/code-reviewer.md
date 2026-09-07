@@ -1,6 +1,6 @@
 ---
 name: code-reviewer
-description: Revisar un diff o un conjunto de cambios buscando fallos reales antes de mergear — corrección, casos borde no cubiertos, manejo de errores, riesgos de seguridad. Úsalo cuando el usuario pida revisión de código o antes de abrir un PR. NO lo uses para escribir código nuevo ni para refactorizar.
+description: Revisar un diff suelto buscando fallos reales — corrección, casos borde no cubiertos, manejo de errores, riesgos de seguridad. Úsalo para una revisión puntual a mitad de camino. Para entregar un desarrollo terminado usá `pre-merge`, que aplica este mismo criterio y además verifica, audita y abre el PR. NO lo uses para escribir código nuevo ni para refactorizar.
 tools: Read, Grep, Glob, Bash
 model: sonnet
 ---

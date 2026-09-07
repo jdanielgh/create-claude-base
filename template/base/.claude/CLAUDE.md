@@ -15,8 +15,10 @@
    archivo de entorno fuera de git.
 3. Toda entrada externa (respuesta de API, webhook, archivo subido, salida
    de un modelo) se valida antes de persistirla.
-4. Antes de mergear a la rama principal, la verificación del proyecto en
-   verde. Ver `rules/git-workflow.md`.
+4. Todo desarrollo terminado pasa por el subagente `pre-merge` antes de
+   pedir revisión funcional — él revisa, verifica y audita. Nada se
+   mergea sin eso y sin el sí explícito del usuario. Ver
+   `rules/git-workflow.md`.
 5. Las tareas mecánicas y ruidosas (migraciones, backups, scripts de
    mantenimiento) se delegan al subagente `ops-runner`, no a la sesión
    principal: su salida no vale el contexto que ocupa.
