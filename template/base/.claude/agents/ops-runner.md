@@ -1,6 +1,6 @@
 ---
 name: ops-runner
-description: Tareas mecánicas y ruidosas sobre el proyecto en ejecución — correr scripts de mantenimiento, migraciones, verificar backups, revisar logs, chequear integridad. Úsalo para cualquier operación que produzca salidas largas, para no inflar la sesión principal. NO lo uses para decisiones de diseño ni para escribir features nuevas.
+description: Tareas mecánicas y ruidosas sobre el proyecto en ejecución — correr scripts de mantenimiento, migraciones, verificar backups, revisar logs, chequear integridad, correr una suite de verificación o un audit de dependencias y devolver el veredicto. Úsalo para cualquier operación que produzca salidas largas, sea desde la sesión principal o desde otro subagente (como `pre-merge`), para que quien te invoque no cargue con el ruido. NO lo uses para decisiones de diseño ni para escribir features nuevas.
 tools: Bash, Read, Grep, Glob
 model: haiku
 ---

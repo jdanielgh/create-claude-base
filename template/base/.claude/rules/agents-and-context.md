@@ -34,6 +34,18 @@ completa, audit de dependencias) es exactamente el ruido desechable que
 esta regla manda delegar. Por eso `pre-merge` es un subagente y no un paso
 de la sesión principal.
 
+**Esta regla vale también dentro de un subagente.** `pre-merge` corre en
+Opus porque el juicio (revisar el diff, armar la escalera de dependencias,
+redactar el informe) es su producto — pero correr la verificación y leer
+la salida cruda de un test runner no es juicio, es el mismo ruido
+desechable de siempre. Por eso `pre-merge` delega esa parte a `ops-runner`
+en vez de leerla él mismo: quien invoca un subagente puede fijar el modelo
+de esa invocación puntual (por default el que declara el subagente, Haiku
+para `ops-runner`; sonnet si la salida es más ambigua de lo que Haiku
+puede resumir sin perder señal), así que la delegación no está atada al
+modelo por defecto del subagente. Nunca deleguéis el juicio en sí — solo
+la lectura y el resumen de lo que ya se corrió.
+
 ## Higiene de contexto
 
 1. Nunca pegar dumps grandes en el chat: exports completos, tablas enteras,
