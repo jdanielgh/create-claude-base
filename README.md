@@ -121,6 +121,19 @@ ninguna skill se dispare.
 
 Figma MCP requiere autorizar el servidor la primera vez.
 
+## Arquitectura y eficiencia de tokens
+
+- [`docs/agent-workflow.md`](./docs/agent-workflow.md) — diagrama del
+  flujo completo de un ticket (`planner` → desarrollo → `code-reviewer` →
+  `pre-merge`), qué modelo corre en cada paso y por qué, y qué archivo
+  guarda cada tipo de estado (`.claude/state/tasks/`, `checkpoints.md`,
+  `status.json`, `docs/DECISIONS.md`).
+- [`docs/token-efficiency.md`](./docs/token-efficiency.md) — por qué ese
+  diseño ahorra tokens, con los mecanismos publicados por Anthropic
+  (caching, aislamiento de subagentes, context editing) y una estimación
+  propia, con supuestos a la vista, de cuánto ahorra delegar la parte
+  mecánica de `pre-merge`.
+
 ## Créditos
 
 La estructura general toma ideas de
