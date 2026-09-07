@@ -16,6 +16,13 @@
 # completo, y queda registrado aunque el árbol de trabajo esté limpio
 # (todo commiteado, esperando el paso siguiente).
 #
+# También poda ledgers de ramas que ya no existen (se mergearon y se
+# borraron). Ningún agente decide cuándo un ledger "cierra de verdad" —
+# un ítem tildado puede quedar invalidado por un commit nuevo (ver
+# rules/resumable-tasks.md, "Vigencia"), así que borrarlo al primer PR
+# abierto sería prematuro. Esto es limpieza mecánica, atada a que la rama
+# en sí ya no exista.
+#
 # Reglas para que no acumule ruido:
 #   1. Árbol limpio y sin ledger activo = nada en vuelo que perder. No escribe.
 #   2. Estado idéntico al último marcador (árbol + próximo pendiente del
@@ -34,6 +41,19 @@ MAX_ENTRIES=20
 if ! command -v git >/dev/null 2>&1 || ! git -C "$PROJECT_DIR" rev-parse --git-dir >/dev/null 2>&1; then
   echo "Checkpoint omitido: sin repo git."
   exit 0
+fi
+
+TASKS_DIR="$STATE_DIR/tasks"
+if [ -d "$TASKS_DIR" ]; then
+  ACTIVE_SLUGS=" $(git -C "$PROJECT_DIR" for-each-ref --format='%(refname:short)' refs/heads | tr '/' '-' | tr '\n' ' ') "
+  for f in "$TASKS_DIR"/*.md; do
+    [ -f "$f" ] || continue
+    slug="$(basename "$f" .md)"
+    case "$ACTIVE_SLUGS" in
+      *" $slug "*) ;;
+      *) rm -f "$f" ;;
+    esac
+  done
 fi
 
 STATUS="$(git -C "$PROJECT_DIR" status --short)"
@@ -99,7 +119,7 @@ LAST_COMMIT="$(git -C "$PROJECT_DIR" log --oneline -1 2>/dev/null || echo "(sin 
     if [ -n "$NEXT_PENDING" ]; then
       echo "Próximo pendiente: $NEXT_PENDING"
     else
-      echo "Todos los ítems del ledger están marcados — falta cerrarlo."
+      echo "Todos los ítems del ledger están marcados para este commit."
     fi
   fi
 } >> "$CHECKPOINT_FILE"

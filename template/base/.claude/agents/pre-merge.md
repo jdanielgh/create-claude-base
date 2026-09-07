@@ -55,22 +55,30 @@ commits) en el medio, y una corrida que puede durar más que el
 presupuesto de una sesión. Seguila al pie de la letra:
 
 - **Al arrancar**, buscá `.claude/state/tasks/<rama-actual>.md`. Si existe
-  y tiene una sección `## pre-merge` con ítems sin marcar, retomá desde el
-  primero sin terminar — no repitas los pasos ya marcados, y confirmá
-  contra el estado real de git antes de confiar en el ledger (regla 3 de
-  `resumable-tasks.md`).
+  y tiene una sección `## pre-merge`, aplicá primero la regla de vigencia
+  de `resumable-tasks.md`: comparás el `@<sha>` del último ítem tildado
+  contra el HEAD actual.
+  - **Coinciden** → los ítems tildados siguen valiendo. Retomá desde el
+    primero sin marcar. Si todos están tildados y hay PR abierto, decilo
+    en una línea — no hay nada nuevo que revisar, no repitas el trabajo.
+  - **No coinciden** → hubo commits nuevos que esa corrida no vio. **Los
+    ítems tildados no cuentan**, aunque digan `[x]` — no reportes
+    `LISTO PARA REVISIÓN FUNCIONAL` ni des nada por verificado solo
+    porque ya lo corriste antes. Agregá `### Corrida <fecha>` debajo de
+    la anterior (que queda como historial) y arrancá de nuevo desde el
+    paso 1 sobre el diff completo y actualizado. Si ya había un PR
+    abierto, seguís usando ese mismo (paso 7): nunca abrís uno segundo.
 - **Si tiene una sección `## Implementación` con ítems sin marcar**,
   decilo antes de seguir: puede ser que te estén llamando antes de que el
   desarrollo esté realmente terminado.
 - **Si no existe todavía**, creálo en el paso 0 con una sección
   `## pre-merge` y los nueve pasos de este documento (0 a 8), sin marcar.
 - **Marcá cada paso apenas lo termines**, con el dato mínimo que te ahorra
-  repetirlo — el veredicto de la verificación, el commit de un fix, si el
-  PR ya existe. No esperes a terminar todo para actualizar el ledger.
-- **Borralo** recién cuando entregues el informe final con el PR abierto.
-  Si quedás `BLOQUEADO`, dejalo tal cual — es lo que le permite a la
-  próxima sesión retomar exactamente donde quedaste, en vez de repetir
-  los pasos que ya corriste.
+  repetirlo y el commit en el que vale — `VERDE @a3f9c1 (14:10)`, no
+  `VERDE` a secas. No esperes a terminar todo para actualizar el ledger.
+- **No lo borres.** Queda como historial de cuántas corridas necesitó esta
+  tarea. La limpieza de ledgers de ramas ya cerradas es automática
+  (`checkpoint.sh`), no es tu trabajo decidirla.
 
 ## Orden de ejecución
 

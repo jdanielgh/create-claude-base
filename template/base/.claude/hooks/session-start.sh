@@ -57,7 +57,7 @@ if command -v git >/dev/null 2>&1 && git -C "$PROJECT_DIR" rev-parse --git-dir >
       if [ -n "$NEXT_PENDING" ]; then
         echo "  próximo pendiente: $NEXT_PENDING"
       else
-        echo "  todos los ítems están marcados — falta cerrar el ledger."
+        echo "  todos los ítems están marcados para el commit actual."
       fi
     fi
   fi
