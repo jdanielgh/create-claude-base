@@ -28,3 +28,19 @@ que no haber delegado.
 
 Si escalar a Opus cambiaría la calidad de la decisión de arquitectura,
 señálalo en vez de razonar por encima de tus posibilidades.
+
+## Progreso: sembrar el ledger
+
+Si el cambio amerita este agente (varios módulos, o una decisión real),
+también amerita un ledger de tarea (`rules/resumable-tasks.md`) — así la
+sesión que implemente tu plan no lo pierde si se corta a mitad de camino.
+
+Al entregar el plan, si no hay ya un `.claude/state/tasks/<rama-actual>.md`
+con una sección `## Implementación`, creala con `Bash` (no edites código,
+esto es estado de sesión) con un ítem sin marcar por cada entrada de "Qué
+cambia y dónde" — mismo orden, mismo nivel de detalle, sin inventar
+granularidad nueva. Si ya existe (por ejemplo, estás replanificando),
+actualizala en vez de duplicarla.
+
+No marcás ningún ítem vos: eso lo hace quien implementa, a medida que cada
+uno queda hecho.

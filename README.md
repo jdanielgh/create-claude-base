@@ -45,7 +45,8 @@ npx create-claude-base mi-app --preset=mobile
 ### Base (todos los presets)
 
 **Reglas** — `dev-style`, `git-workflow`, `security-privacy`,
-`dependency-audit`, `agents-and-context`, `ai-cost`, `task-report`.
+`dependency-audit`, `agents-and-context`, `ai-cost`, `task-report`,
+`resumable-tasks`.
 
 La de `ai-cost` es la menos obvia y la que más ahorra: prohíbe llamadas
 reales a la API en tests y CI, exige estimación de costo antes de una
@@ -55,7 +56,11 @@ la política de vulnerabilidades (qué bloquea, qué peso tiene cada
 dependencia, la escalera de arreglo) de `security-privacy`, para que cada
 archivo se pueda leer sin la otra. La de `task-report` fija qué se le
 responde al usuario cuando una tarea termina: solo lo que necesita para
-probar y decidir, nunca lo que ya está en el diff.
+probar y decidir, nunca lo que ya está en el diff. La de `resumable-tasks`
+es la que evita volver a empezar de cero si te quedás sin tokens a mitad
+de camino: `planner` y `pre-merge` llevan un ledger por rama
+(`.claude/state/tasks/<rama>.md`) con checklist de progreso, y los hooks
+de checkpoint/session-start lo muestran solos al volver.
 
 **Subagentes** — `planner` (diseño de cambios que tocan varios módulos),
 `code-reviewer` (revisión puntual a mitad de camino), `pre-merge` (Opus, la
@@ -69,12 +74,14 @@ vale el contexto que ocupa).
 **Hooks** — deterministas, nunca llaman al modelo:
 
 - `session-start.sh` — lee `.claude/state/status.json` y arranca la sesión
-  orientada sin releer código.
+  orientada sin releer código. También muestra el ledger de tarea activo
+  en la rama actual, si hay uno (`rules/resumable-tasks.md`).
 - `checkpoint.sh` — deja un marcador mecánico en `PreCompact` y
-  `SessionEnd`. Tiene tres reglas anti-ruido aprendidas por las malas: no
-  escribe con el árbol limpio, no duplica un estado idéntico, y conserva
-  solo los últimos 20 marcadores. Escribe en `.claude/state/`, nunca en
-  documentos versionados.
+  `SessionEnd`, con un puntero al ledger activo y su próximo pendiente si
+  existe. Tiene tres reglas anti-ruido aprendidas por las malas: no
+  escribe con el árbol limpio y sin tarea activa, no duplica un estado
+  idéntico, y conserva solo los últimos 20 marcadores. Escribe en
+  `.claude/state/`, nunca en documentos versionados.
 
 ### Por preset
 

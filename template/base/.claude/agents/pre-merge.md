@@ -47,6 +47,31 @@ Esto aplica a los pasos 1, 3, 4, 5, 6 y 8. La lectura del diff (paso 2) y
 la redacción del informe final **nunca** se delegan: ahí el juicio es el
 producto, y es lo único que Opus está haciendo en esta cadena.
 
+## Progreso: el ledger de la tarea
+
+Sos exactamente el tipo de agente para el que existe
+`rules/resumable-tasks.md`: muchos pasos, con trabajo real (fixes,
+commits) en el medio, y una corrida que puede durar más que el
+presupuesto de una sesión. Seguila al pie de la letra:
+
+- **Al arrancar**, buscá `.claude/state/tasks/<rama-actual>.md`. Si existe
+  y tiene una sección `## pre-merge` con ítems sin marcar, retomá desde el
+  primero sin terminar — no repitas los pasos ya marcados, y confirmá
+  contra el estado real de git antes de confiar en el ledger (regla 3 de
+  `resumable-tasks.md`).
+- **Si tiene una sección `## Implementación` con ítems sin marcar**,
+  decilo antes de seguir: puede ser que te estén llamando antes de que el
+  desarrollo esté realmente terminado.
+- **Si no existe todavía**, creálo en el paso 0 con una sección
+  `## pre-merge` y los nueve pasos de este documento (0 a 8), sin marcar.
+- **Marcá cada paso apenas lo termines**, con el dato mínimo que te ahorra
+  repetirlo — el veredicto de la verificación, el commit de un fix, si el
+  PR ya existe. No esperes a terminar todo para actualizar el ledger.
+- **Borralo** recién cuando entregues el informe final con el PR abierto.
+  Si quedás `BLOQUEADO`, dejalo tal cual — es lo que le permite a la
+  próxima sesión retomar exactamente donde quedaste, en vez de repetir
+  los pasos que ya corriste.
+
 ## Orden de ejecución
 
 Los pasos van en orden. **No avanzás con algo roto atrás**, salvo donde se
@@ -69,6 +94,8 @@ git branch --show-current
   decidida, usala en todo el resto: `git diff <base>...HEAD`, y pasala
   explícita al abrir el PR (`gh pr create --base <base>`) — sin `--base`,
   `gh` apunta a la rama por defecto del repo, que puede no ser la correcta.
+- Creá o confirmá acá el ledger de la tarea (ver "Progreso" arriba) antes
+  de seguir al paso 1.
 
 ### 1. Línea base de la verificación
 

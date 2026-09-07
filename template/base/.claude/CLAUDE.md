@@ -24,6 +24,8 @@
    principal: su salida no vale el contexto que ocupa.
 6. Cualquier corrida que gaste saldo real de una API de IA sigue
    `rules/ai-cost.md` completo, sin excepción.
+7. Si hay una tarea en curso registrada en `.claude/state/tasks/`, retomala
+   desde ahí en vez de empezar de cero. Ver `rules/resumable-tasks.md`.
 
 <!-- Añade acá lo que sea específico de este proyecto: invariantes que nunca
      se rompen, tablas que nunca se tocan, límites de arquitectura. Sé

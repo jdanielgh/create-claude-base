@@ -10,9 +10,16 @@
 # llena de entradas vacías que hay que limpiar a mano. Esto es estado
 # efímero de sesión, no evidencia.
 #
-# Tres reglas para que no acumule ruido:
-#   1. Árbol limpio = nada en vuelo que perder. No escribe.
-#   2. Estado idéntico al último marcador = no aporta. No duplica.
+# Si hay una tarea con ledger activo (`.claude/state/tasks/<rama>.md`, ver
+# rules/resumable-tasks.md), también deja un puntero a ella y a su próximo
+# paso pendiente — así SessionStart lo puede mostrar sin abrir el ledger
+# completo, y queda registrado aunque el árbol de trabajo esté limpio
+# (todo commiteado, esperando el paso siguiente).
+#
+# Reglas para que no acumule ruido:
+#   1. Árbol limpio y sin ledger activo = nada en vuelo que perder. No escribe.
+#   2. Estado idéntico al último marcador (árbol + próximo pendiente del
+#      ledger) = no aporta. No duplica.
 #   3. Conserva solo los últimos MAX_ENTRIES marcadores.
 set -euo pipefail
 
@@ -30,17 +37,27 @@ if ! command -v git >/dev/null 2>&1 || ! git -C "$PROJECT_DIR" rev-parse --git-d
 fi
 
 STATUS="$(git -C "$PROJECT_DIR" status --short)"
+BRANCH="$(git -C "$PROJECT_DIR" rev-parse --abbrev-ref HEAD 2>/dev/null || echo "?")"
+LEDGER_FILE="$STATE_DIR/tasks/$(echo "$BRANCH" | tr '/' '-').md"
+NEXT_PENDING=""
+if [ -f "$LEDGER_FILE" ]; then
+  NEXT_PENDING="$(grep -m1 '^- \[ \]' "$LEDGER_FILE" 2>/dev/null || true)"
+fi
 
 # Regla 1
-if [ -z "$STATUS" ]; then
-  echo "Checkpoint omitido: no hay cambios sin commitear."
+if [ -z "$STATUS" ] && [ ! -f "$LEDGER_FILE" ]; then
+  echo "Checkpoint omitido: no hay cambios sin commitear ni tarea activa."
   exit 0
 fi
 
 mkdir -p "$STATE_DIR"
 
+FINGERPRINT="$STATUS
+---
+$NEXT_PENDING"
+
 # Regla 2
-if [ -f "$LAST_STATUS_FILE" ] && [ "$STATUS" = "$(cat "$LAST_STATUS_FILE")" ]; then
+if [ -f "$LAST_STATUS_FILE" ] && [ "$FINGERPRINT" = "$(cat "$LAST_STATUS_FILE")" ]; then
   echo "Checkpoint omitido: el estado no cambió desde el último marcador."
   exit 0
 fi
@@ -55,11 +72,12 @@ para no perder de vista qué había en vuelo si una compactación corta el
 hilo.
 
 Las decisiones de diseño reales NO van acá — van a `docs/DECISIONS.md`, a
-mano o con `/checkpoint`, que sí razona sobre lo discutido.
+mano o con `/checkpoint`, que sí razona sobre lo discutido. El detalle de
+una tarea en curso vive en su ledger (`.claude/state/tasks/`,
+`rules/resumable-tasks.md`); acá solo queda el puntero.
 HEADER
 fi
 
-BRANCH="$(git -C "$PROJECT_DIR" rev-parse --abbrev-ref HEAD 2>/dev/null || echo "?")"
 LAST_COMMIT="$(git -C "$PROJECT_DIR" log --oneline -1 2>/dev/null || echo "(sin commits)")"
 
 {
@@ -68,12 +86,25 @@ LAST_COMMIT="$(git -C "$PROJECT_DIR" log --oneline -1 2>/dev/null || echo "(sin 
   echo ""
   echo "Rama \`$BRANCH\`, último commit: $LAST_COMMIT"
   echo ""
-  echo '```text'
-  echo "$STATUS"
-  echo '```'
+  if [ -n "$STATUS" ]; then
+    echo '```text'
+    echo "$STATUS"
+    echo '```'
+  else
+    echo "Árbol de trabajo limpio."
+  fi
+  if [ -f "$LEDGER_FILE" ]; then
+    echo ""
+    echo "Tarea activa: \`.claude/state/tasks/$(basename "$LEDGER_FILE")\`"
+    if [ -n "$NEXT_PENDING" ]; then
+      echo "Próximo pendiente: $NEXT_PENDING"
+    else
+      echo "Todos los ítems del ledger están marcados — falta cerrarlo."
+    fi
+  fi
 } >> "$CHECKPOINT_FILE"
 
-printf '%s' "$STATUS" > "$LAST_STATUS_FILE"
+printf '%s' "$FINGERPRINT" > "$LAST_STATUS_FILE"
 
 # Regla 3. El encabezado usa `# `, los marcadores `## `, así que contar
 # `^## ` no lo toca.
