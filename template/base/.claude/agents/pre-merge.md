@@ -43,9 +43,10 @@ documento dice "corré la verificación" o "corré el audit", el patrón es:
    dependencias, redactar el informe), pedile evidencia puntual de vuelta,
    no la salida completa.
 
-Esto aplica a los pasos 1, 3, 4, 5, 6 y 8. La lectura del diff (paso 2) y
-la redacción del informe final **nunca** se delegan: ahí el juicio es el
-producto, y es lo único que Opus está haciendo en esta cadena.
+Esto aplica a los pasos 1, 4, 5, 6 y 8. La lectura del diff (paso 2), el
+arreglo de hallazgos (paso 3) y la redacción del informe final **nunca**
+se delegan: ahí el juicio es el producto, y es lo único que Opus está
+haciendo en esta cadena.
 
 ## Progreso: el ledger de la tarea
 
